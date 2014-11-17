@@ -1,30 +1,37 @@
-function[sol] = simplified_model(parameters, timepoints)
+function[sol] = simplified_model(npep, parameters, timepoints)
 
     % simplified model of peptide presentation
     
-    % allocate parameters
-    A = parameters(1);
-    n = parameters(2);
-    ktr = parameters(3);
+    % npep is the number of peptides
     
-    e = 1e4;
-    
-    g0 = 1;
-    g1 = parameters(4); %6.74;
-    
-    u = parameters(5); %5.9327e+01; %3600*10^-4;
-         
     % ode solver options
     options = odeset('RelTol', 10^-10, 'AbsTol', 10^-10);
+
     
     % set up vector for solution
-    sol = zeros(1, numel(timepoints));
+    sol = zeros(2*npep, numel(timepoints));
     
-    % peptide levels
-    sol(1,:) = 0.01*peptide(timepoints);
+    for i=1:npep
+    
+        % allocate parameters
+        A = parameters(i);
+        n = parameters(npep + i);
+        ktr = parameters(2*npep + i);
         
-    [~, sol(2,:)] = ode15s(@ydot, timepoints, 0, options);
-    sol(2,:) = sol(2,:);
+        u = parameters(3*npep + i); %5.9327e+01; %3600*10^-4;
+
+        e = 1e4;
+
+        g0 = 1;
+        g1 = parameters(4*npep + 1); %6.74;
+
+        % peptide levels
+        sol(i,:) = 0.01*peptide(timepoints);
+        
+        [~, sol(npep+i,:)] = ode15s(@ydot, timepoints, 0, options);
+        %sol(2,:) = sol(2,:);
+        
+    end
     
     % function for calculating derivative
     function[out] = ydot(t, y)
