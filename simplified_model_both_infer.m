@@ -1,115 +1,38 @@
-timepoints = [0, 0.5, 1:8];
+timepoints = [0, 0.5, 1:8]; % times at which experimental observations were collected
 
-options.npep = 4; % no. peptides
+options.npep = 4; % number of peptides followed
+
+% Read in tryptic and epitope data.
 
 tryptic_data = csvread('all_Kb_tryptic.csv',1,1);
-%tryptic_data = tryptic_data(1:2,:)
-
 Kb_data = csvread('all_Kb_epitope.csv',1,1);
-%Kb_data = Kb_data(1:2,:)
 
+% Set the number of burnin and sampling iterations for the sampler.
 options.burnin = 1000;
-options.samples = 10000;
+options.samples = 1000;
 
-% options.start = 0.9*[3.7017e+02, 1.4098e+02, ... % A
-%                 9.2331, 1.4801, ... % n
-%                 1.0749, 5.0450e-01, ... % ktr
-%                 1.0117e+02, 5.9327e+01, ... % u
-%                 6.74, ... % g1
-%                 0.01, 0.02,  ... % tryptic error
-%                 5, 50, ... % epitope erroe
-%                 ];
-% 
-
-% These are good starting for Kb
-options.start = [317.0,    180.2,    164.2,    1024.4,... % A
-                8.5188,    0.9097,    2.0417,   10.3491, ... % n
-                1.1213,    0.1324,    0.5987,    0.9251, ... % ktr
-                1211.8,    1074.6,    186.8,    2599.0, ... % u
-                0.0453, ... % g1
-                0.02, 0.02, 0.02,  0.2, ... % tryptic error
-                50, 200, 500, 50 ... % epitope erroe
+% Initialise the sampler. These are good starting values for the example
+% data:
+options.start = [321.0953,  182.3905,  141.8622,  608.5598,... % A
+                8.8215,    0.8412,    1.4392,    8.4441, ... % n
+                1.1653,    0.1213,    0.4661,    0.7841, ... % ktr
+                1588.9,    1344.5,    215.7,    2677.0, ... % u
+                0.0019, ... % g1
+                0.0109,    0.0220,    0.0466,    0.0143, ... % tryptic error
+                38.3968,   30.9699,  299.7263,   30.2299 ... % epitope erroe
                 ];
 
 
-% These are good starting for Db
-% options.start = 0.9*[3.7017e+02, 1.4098e+02, 1.6664e+02, ... % A
-%                 9.2331, 1.4801, 1.8995, ... % n
-%                 1.0749, 5.0450e-01, 4.1892e-01, ... % ktr
-%                 1.0117e+02, 5.9327e+01, 7.3351e+01, ... % u
-%                 6.74, ... % g1
-%                 0.01, 0.02, 0.02,  ... % tryptic error
-%                 5, 50, 10 ... % epitope erroe
-%                 ];
-
-% These are good step size for Db
-options.stepSize = [9.2851,    2.9674,    1.9740,   10.4762,... % A
-                0.0903,    0.0078,    0.0218,    0.0957, ... % n
-                0.0154,    0.0012,    0.0052,    0.0087, ... % ktr
-                42.3092,   45.4577,    7.0370,   82.7146, ... % u
-                0.0161, ... % g1
-                0.02, 0.02, 0.02,  0.2, ... % tryptic error
-                50, 200, 500, 50 ... % epitope erroe
+% Initialise the sampler step size. These are good starting values for the example
+% data:
+options.stepSize = [6.0920,    2.1632,    2.1497,    9.3343,... % A
+                0.0658,    0.0086,    0.0319,    0.0371, ... % n
+                0.0082,    0.0007,    0.0051,    0.0063, ... % ktr
+                55.1929,   36.4525,    5.1300,   314.1086, ... % u
+                0.0099, ... % g1
+                0.0046,    0.0063,    0.0118,  0.0050, ... % tryptic error
+                11.4384,   15.7938,  174.3392,   15.6905 ... % epitope error
                 ];
 
-% These are good step size for Db
-% options.stepSize = [3.6567, 3.6567, 3.6567, ...
-%                 0.0384, 0.0384,  0.0384, ...
-%                 0.0089, 0.0089, 0.0089, ...
-%                 1.5388, 1.5388, 1.5388, ...
-%                 0.1748, ...
-%                 0.0026, 0.0052, 0.0052, ...
-%                 1.2969, 12.9687, 10 ...
-%                 ];
-
-
-% options.stepSize = [0, 0.01*1.4098e+02, 0, ...
-%                 0, 0, 0, ...
-%                 0, 0, 0, ...
-%                 0, 0, 0, ...
-%                 0, ...
-%                 0, 0, 0, ...
-%                 0, 0, 0 ...
-%                 ];
-% 
-            
-% options.stepSize = 0.05*[0.05*3.7017e+02, 0.05*1.4098e+02, 0.05*1.6664e+02, ...
-%                 0.05*9.2331, 0.05*1.4801, 0.05*1.8995, ...
-%                 0.05*1.0749, 0.05*5.0450e-01, 0.05*4.1892e-01, ...
-%                 0.05*1.0117e+02, 0.05*5.9327e+01, 0.05*7.3351e+01, ...
-%                 0.05*6.74, ...
-%                 0.01, 0.02, 0.02, ...
-%                 5, 50, 10 ...
-%                 ];
-            
-% options.parsToInfer
-
-% for i=1:options.npep
-%     
-%     solstart = simplified_model(1, ...
-%                     [options.start(i), ...
-%                     options.start(options.npep + i), ...
-%                     options.start(2*options.npep + i), ...
-%                     options.start(3*options.npep + i), ...
-%                     options.start(4*options.npep + 1) ...
-%                     ], ...
-%                 0:0.1:max(timepoints));
-% 
-%     figure(1)
-%     subplot(1 ,options.npep, i)
-%     plot(0:0.1:max(timepoints), solstart(1,:), 'r');
-%     hold on
-%     subplot(1 ,options.npep, i)
-%     plot(timepoints, tryptic_data(i,:), 'o')
-% 
-%     figure(2)
-%     subplot(1 ,options.npep, i)
-%     plot(0:0.1:max(timepoints), solstart(2,:), 'r');
-%     hold on
-%     subplot(1 ,options.npep, i)
-%     plot(timepoints, Kb_data(i,:), 'o')
-% 
-% end
-
-
+% Now run the sampler:
 gibbs_sampler(timepoints, tryptic_data, Kb_data, options)

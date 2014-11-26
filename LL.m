@@ -1,17 +1,14 @@
 function out = LL(pred, tryptic_data, Kb_data, error)
 
-%error = 0.06;
-
-    %error = [0.01, 0.02, 5, 50];
-%     error = [0.02, 0.02, 0.02,  0.2, ... % tryptic error
-%                 50, 200, 500, 50 ... % epitope erroe
-%                 ];
-
+    % pred are simulations from current parameter values
+    % tryptic_data is intracellular peptide levels
+    % Kb_data is cell-surface epitope levels
+    % error is a two-element vector, [error in tryptic level, error in
+    % epitope level] Both elements are standard deviation of measurement
+    % error
 
     [npep, N] = size(tryptic_data);
     
-    %error(2) = 50;
-
     out = 0;
     
     for i=1:npep
